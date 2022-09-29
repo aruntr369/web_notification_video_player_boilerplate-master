@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import '../constants/app_strings.dart';
 
 class ApiService {
-  late AudioHandler audioHandler;
+  AudioHandler? audioHandler;
 
   static const environment = ApiEnvironment.dev;
 

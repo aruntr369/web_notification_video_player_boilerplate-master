@@ -54,12 +54,12 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                       // ),
                     ),
                   ),
-                  ElevatedButton(
-                      onPressed: () => viewModel.apiService.audioHandler.play,
-                      child: Text("play")),
-                  ElevatedButton(
-                      onPressed: () => viewModel.apiService.audioHandler.pause,
-                      child: Text("pause"))
+                  // ElevatedButton(
+                  //     onPressed: () => viewModel.apiService.audioHandler.play,
+                  //     child: Text("play")),
+                  // ElevatedButton(
+                  //     onPressed: () => viewModel.apiService.audioHandler.pause,
+                  //     child: Text("pause"))
                 ],
               )
 
@@ -73,15 +73,21 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.paused) {
       debugPrint("AppLifecycleState1 paused");
-      apiService.audioHandler = await AudioService.init(
-        builder: () => AudioPlayerHandler(flickManager),
-        config: const AudioServiceConfig(
-          androidNotificationChannelId: 'com.webcastle.boilerplate.channel.audio',
-          androidNotificationChannelName: 'Audio playback',
-          androidNotificationOngoing: true,
-        ),
-      );
-      apiService.audioHandler.play();
+      if(apiService.audioHandler == null) {
+        debugPrint("apiService.audioHandler2222");
+        apiService.audioHandler = await AudioService.init(
+          builder: () => AudioPlayerHandler(flickManager),
+          config: const AudioServiceConfig(
+            androidNotificationChannelId: 'com.webcastle.boilerplate.channel.audio',
+            androidNotificationChannelName: 'Audio playback',
+            androidNotificationOngoing: true,
+          ),
+        );
+      }
+      debugPrint("flickManager.flickVideoManager?.isPlaying${flickManager.flickVideoManager?.isPlaying}");
+      //if (flickManager.flickVideoManager?.isPlaying?? false) {
+        apiService.audioHandler?.play();
+      //}
     }
     if (state == AppLifecycleState.detached) {
       debugPrint("AppLifecycleState1 detached");
@@ -91,7 +97,9 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
     }
     if (state == AppLifecycleState.resumed) {
       debugPrint("AppLifecycleState1 resumed");
-      apiService.audioHandler.stop();
+      if(apiService.audioHandler != null) {
+        await apiService.audioHandler?.stop();
+      }
     }
   }
   @override

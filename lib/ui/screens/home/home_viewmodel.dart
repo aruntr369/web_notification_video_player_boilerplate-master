@@ -11,7 +11,7 @@ import '../../../services/api_service.dart';
 
 T? ambiguate<T>(T? value) => value;
 
-class HomeViewModel extends BaseViewModel with WidgetsBindingObserver {
+class HomeViewModel extends BaseViewModel {
 
   //late FlickManager flickManager;
   final apiService = locator<ApiService>();
@@ -43,22 +43,6 @@ class HomeViewModel extends BaseViewModel with WidgetsBindingObserver {
     // );
     setBusy(false);
 
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
-      debugPrint("AppLifecycleState paused");
-    }
-    if (state == AppLifecycleState.detached) {
-      debugPrint("AppLifecycleState detached");
-    }
-    if (state == AppLifecycleState.inactive) {
-      debugPrint("AppLifecycleState inactive");
-    }
-    if (state == AppLifecycleState.resumed) {
-      debugPrint("AppLifecycleState resumed");
-    }
   }
 
 }
@@ -110,7 +94,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   AudioPlayerHandler(this.flickManager) {
     // playbackState.add(playbackState.value.copyWith(
     //   controls: [MediaControl.pause],
-    //   processingState: AudioProcessingState.completed,
+    //   processingState: AudioProcessingState.ready,
     // ));
 
     // flickManager = FlickManager(
@@ -142,6 +126,8 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     playbackState.add(playbackState.value.copyWith(
       playing: true,
       controls: [MediaControl.pause],
+      processingState: AudioProcessingState.ready,
+
     ));
     await flickManager.flickControlManager?.play();
   }
@@ -159,9 +145,11 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
   Future<void> stop() async {
     playbackState.add(playbackState.value.copyWith(
       playing: false,
-      controls: [MediaControl.stop],
+      //controls: [MediaControl.stop],
+      processingState: AudioProcessingState.idle,
+
     ));
-    await flickManager.flickControlManager?.play();
+    //await flickManager.flickControlManager?.play();
     //flickManager.flickVideoManager?.isPlaying;
   }
 
